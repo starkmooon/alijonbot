@@ -15,11 +15,8 @@ async def kino_add_content(message:types.Message,state:FSMContext):
     async with state.proxy() as data:
         data['file_id']=message.video.file_id
         data['caption']=message.caption or 'Kino'
-
-
     await message.answer("Kino uchun kod kiriting")
     await KinoState.kod.set()
-
 
 @dp.message_handler(state=KinoState.kod,content_types=types.ContentTypes.TEXT)
 async def kino_add_kod(message:types.Message,state:FSMContext):
@@ -58,9 +55,16 @@ async def kino_top(message:types.Message):
 
 @dp.message_handler(commands="kino_delete")
 async def kino_add_function(message:types.Message):
-    id=int(message.text)
     await message.answer("kino kodini yuboring")
-    await kinodb.delete_movie(post_id=id)
+    await KinoState.udalit.set()
+
+@dp.message_handler(state=KinoState.udalit,content_types=types.ContentTypes.TEXT)
+async def kino_add_kod(message:types.Message,state:FSMContext):
+    post_id=int(message.text)
+    await kinodb.delete_movie(post_id=post_id)
+
+
+
 
 @dp.message_handler(commands="user_delete")
 async def user_add_function(message:types.Message):
